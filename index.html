@@ -94,7 +94,7 @@
                   <span id="name-error" class="text-red-500 text-sm"></span>
                 </div>
               </div>
-              <div class="">
+              <div class="md:max-w-[50%]">
                 <label
                   for="email"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -166,20 +166,20 @@
           var constraints = {
             name: {
               presence: {
-                message: "es requerido.",
+                message: "^El nombre es obligatorio.",
               },
               length: {
                 minimum: 1,
                 maximum: 50,
-                message: "debe tener entre 1 y 50 caracteres.",
+                message: "^El nombre debe tener entre 1 y 50 caracteres.",
               },
             },
             email: {
               presence: {
-                message: "es requerido.",
+                message: "^El email es obligatorio.",
               },
               email: {
-                message: "no es válido",
+                message: "^El email no es válido.",
               },
             },
           };
