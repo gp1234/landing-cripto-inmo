@@ -66,16 +66,21 @@
           <h1
             class="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl dark:text-white"
           >
-            Inversiones Inmobiliarias con Tecnología Blockchain
+            Inversiones Inmobiliarias con Tecnología Blockchain 🇪🇨
           </h1>
           <p
             class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400"
           >
             Únete a nuestra comunidad para acceder a inversiones seguras y
-            asequibles en bienes raíces a través de la tokenización. ¡Regístrate
-            ahora para obtener acceso exclusivo y actualizaciones!
+            asequibles en bienes raíces a través de la tokenización en Ecuador.
+            ¡Regístrate ahora para obtener acceso exclusivo y actualizaciones!
           </p>
-          <form id="myForm">
+          <form
+            action="https://formspree.io/f/xeqyywrn"
+            id="myForm"
+            method="POST"
+            class="md:w-[50%]"
+          >
             <div class="flex flex-col md:flex-row mb-4">
               <div class="md:mr-8">
                 <label
@@ -88,6 +93,7 @@
                     type="text"
                     placeholder="Nombre"
                     id="name"
+                    name="name"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   />
 
@@ -104,6 +110,7 @@
                   <input
                     type="text"
                     id="email"
+                    name="email"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="correo@gmail.com"
                   />
@@ -116,6 +123,7 @@
             >
               Enviar
             </button>
+            <p id="my-form-status"></p>
           </form>
         </div>
         <div class="mt-4 lg:mt-0 lg:col-span-5 lg:flex">
@@ -155,58 +163,83 @@
     <script src="https://unpkg.com/flowbite@1.4.1/dist/flowbite.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     <script>
-      document
-        .getElementById("myForm")
-        .addEventListener("submit", function (event) {
-          // Prevent the form from submitting
-          event.preventDefault();
+      var form = document.getElementById("my-form");
 
-          // Define the constraints
-          // Define the constraints
-          var constraints = {
-            name: {
-              presence: {
-                message: "^El nombre es obligatorio.",
-              },
-              length: {
-                minimum: 1,
-                maximum: 50,
-                message: "^El nombre debe tener entre 1 y 50 caracteres.",
-              },
+      document.addEventListener("DOMContentLoaded", function () {
+        form.reset();
+      });
+
+      async function handleSubmit(event) {
+        event.preventDefault();
+        var constraints = {
+          name: {
+            presence: {
+              message: "^El nombre es obligatorio.",
+            },
+            length: {
+              minimum: 1,
+              maximum: 50,
+              message: "^El nombre debe tener entre 1 y 50 caracteres.",
+            },
+          },
+          email: {
+            presence: {
+              message: "^El email es obligatorio.",
             },
             email: {
-              presence: {
-                message: "^El email es obligatorio.",
-              },
-              email: {
-                message: "^El email no es válido.",
-              },
+              message: "^El email no es válido.",
             },
-          };
-          // Get the values from the input fields
-          var values = {
-            name: document.getElementById("name").value,
-            email: document.getElementById("email").value,
-          };
+          },
+        };
+        var values = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+        };
 
-          // Validate the values against the constraints
-          var validation = validate(values, constraints);
+        var validation = validate(values, constraints);
 
-          // If there are errors, `validation` will be an object with the errors,
-          // otherwise it will be `undefined`
-          if (validation) {
-            if (validation.name) {
-              document.getElementById("name-error").textContent =
-                validation.name[0];
-            }
-            if (validation.email) {
-              document.getElementById("email-error").textContent =
-                validation.email[0];
-            }
-          } else {
-            console.log("No errors");
+        if (validation) {
+          if (validation.name) {
+            document.getElementById("name-error").textContent =
+              validation.name[0];
           }
-        });
+          if (validation.email) {
+            document.getElementById("email-error").textContent =
+              validation.email[0];
+          }
+        } else {
+          console.log("No errors");
+        }
+        var status = document.getElementById("my-form-status");
+        var data = new FormData(event.target);
+        fetch(event.target.action, {
+          method: form.method,
+          body: data,
+          headers: {
+            Accept: "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              status.innerHTML = "Thanks for your submission!";
+              form.reset();
+            } else {
+              response.json().then((data) => {
+                if (Object.hasOwn(data, "errors")) {
+                  status.innerHTML = data["errors"]
+                    .map((error) => error["message"])
+                    .join(", ");
+                } else {
+                  status.innerHTML =
+                    "Oops! There was a problem submitting your form";
+                }
+              });
+            }
+          })
+          .catch((error) => {
+            status.innerHTML = "Oops! There was a problem submitting your form";
+          });
+      }
     </script>
   </body>
 </html>
